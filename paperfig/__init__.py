@@ -40,7 +40,8 @@ from .panel_3d import (
 
 # --- High-level vector-field panel ---
 from .vectorfield_panel import (
-    PlotVectorfieldPanel
+    PlotVectorfieldPanel,
+    plot_vectorfield_panels
 )
 
 __all__ = [
@@ -57,5 +58,6 @@ __all__ = [
     "add_colorbar_cm",
     "quiver3_advanced",
     "quiver3_advanced_panel",
-    "PlotVectorfieldPanel"
+    "PlotVectorfieldPanel",
+    "plot_vectorfield_panels"
 ]
