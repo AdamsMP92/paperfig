@@ -229,12 +229,6 @@ def plot_vectorfield_panels(
         panelB_pos_cm=(7.0, 0.8),
         panelB_size_cm=(4.0, 3.5),
 
-        # --- Labels ---
-        labelA="(a)",
-        labelB="(b)",
-        add_labels=True,
-        fig_width_cm=8.5,
-        fig_height_cm=6.0
 ):
     """
     Attach two vectorfield panels (3D quiver + 1D projection) to an *existing* figure.
@@ -337,13 +331,6 @@ def plot_vectorfield_panels(
         margin_cm=0.0
     )
 
-    # Label (a)
-    if add_labels:
-        add_label_cm(fig, labelA,
-                     panelA_pos_cm[0] - 0.3,
-                     panelA_pos_cm[1] + panelA_size_cm[1] + 0.2,
-                     fig_width_cm, fig_height_cm)
-
     # ==========================================================
     # === Colorbar ===
     # ==========================================================
@@ -389,13 +376,6 @@ def plot_vectorfield_panels(
 
     axB.grid(True, linestyle="-", color="0.8", linewidth=0.1)
     axB.tick_params(direction="in", width=0.4, length=1.0, top=True, right=True)
-
-    # Label (b)
-    if add_labels:
-        add_label_cm(fig, labelB,
-                     panelB_pos_cm[0] - 0.3,
-                     panelB_pos_cm[1] + panelB_size_cm[1] + 0.2,
-                     fig_width_cm, fig_height_cm)
 
     return axA, axB
 
