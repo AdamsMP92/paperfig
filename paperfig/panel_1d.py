@@ -21,51 +21,22 @@ def plotLogLog_panel_core(
         linewidth=0.8,
         markersize=3.0,
         linestyles=None,
-        colors=None
+        colors=None,
+        major_tick_length=3.0,
+        major_tick_width=0.6,
+        minor_tick_length=1.6,
+        minor_tick_width=0.35,
 ):
     """
-    Create a fixed-size log–log panel for multiple curves.
-
-    Parameters
-    ----------
-    fig : matplotlib.figure.Figure
-        Target figure object.
-    curves : list of dict
-        Each entry: {"x": array, "y": array, "label": str (optional)}.
-    pos_cm : tuple (x_cm, y_cm)
-        Lower-left corner of panel in centimeters.
-    size_cm : tuple (w_cm, h_cm)
-        Panel size in centimeters.
-    xlabel, ylabel, title : str
-        Axis labels and optional title.
-    xlim, ylim : tuple
-        Axis limits.
-    fontsize, ticks_fontsize : float
-        Font sizes.
-    show_ticks : bool
-        Whether to show tick labels.
-    grid : bool
-        Show grid lines (log-friendly).
-    legend : bool
-        Display legend if any labels are given.
-    linewidth, markersize : float
-        Styling parameters.
-    linestyles, colors : list
-        Optional manual line/marker colors/styles.
-
-    Returns
-    -------
-    ax : matplotlib.axes.Axes
-        Created axis handle.
+    Professional log–log panel with APS/PRB-style ticks.
     """
 
-    # === Panel creation with physical sizing ===
+    # === Panel creation ===
     ax = add_axes_cm(fig, pos_cm[0], pos_cm[1], size_cm[0], size_cm[1])
-
     ax.set_xscale("log")
     ax.set_yscale("log")
 
-    # === Color/style cycles ===
+    # === Style cycles ===
     if colors is None:
         colors = plt.rcParams["axes.prop_cycle"].by_key()["color"]
     if linestyles is None:
@@ -85,7 +56,7 @@ def plotLogLog_panel_core(
             label=label
         )
 
-    # === Labels, limits, grid ===
+    # === Labels & limits ===
     ax.set_xlabel(xlabel, fontsize=fontsize)
     ax.set_ylabel(ylabel, fontsize=fontsize)
     if title:
@@ -94,12 +65,32 @@ def plotLogLog_panel_core(
     if xlim: ax.set_xlim(xlim)
     if ylim: ax.set_ylim(ylim)
 
+    # === Grid ===
     if grid:
-        ax.grid(True, linestyle="-", linewidth=0.25, color="0.85")
+        ax.grid(which="major", linestyle="-", linewidth=0.3, color="0.85")
+        ax.grid(which="minor", linestyle=":", linewidth=0.2, color="0.85")
 
-    # === Ticks ===
+    # === Professional tick styling ===
     if show_ticks:
-        ax.tick_params(labelsize=ticks_fontsize, width=0.4, length=1.8)
+        # Major ticks
+        ax.tick_params(
+            which="major",
+            direction="in",
+            length=major_tick_length,
+            width=major_tick_width,
+            labelsize=ticks_fontsize,
+            top=True,
+            right=True
+        )
+        # Minor ticks
+        ax.tick_params(
+            which="minor",
+            direction="in",
+            length=minor_tick_length,
+            width=minor_tick_width,
+            top=True,
+            right=True
+        )
     else:
         ax.set_xticks([]); ax.set_yticks([])
 
@@ -116,6 +107,7 @@ def plotLogLog_panel_core(
             )
 
     return ax
+
 
 def plotLinLin_panel_core(
         fig,
