@@ -55,6 +55,10 @@ def plot2D_pcolormesh_panel_core(
         vmax=None,
         xlim=None,
         ylim=None,
+        xticks=None,
+        yticks=None,
+        xticklabels=None,
+        yticklabels=None,
         fontsize=7,
         ticks_fontsize=6,
         show_ticks=True,
@@ -66,33 +70,23 @@ def plot2D_pcolormesh_panel_core(
     Supports:
       - x,y as 1D axes
       - x,y as 2D meshgrid
+      - custom xticks / yticks / ticklabels
     """
 
-    # ------------------------------------------------------------
-    # Create axes in cm coordinates
-    # ------------------------------------------------------------
     ax = add_axes_cm(fig, pos_cm[0], pos_cm[1], size_cm[0], size_cm[1])
 
-    # ------------------------------------------------------------
-    # Normalize x and y into meshgrid (pcolormesh requires 2D)
-    # ------------------------------------------------------------
+    # Normalize axes
     x = np.asarray(x)
     y = np.asarray(y)
 
-    # Case 1: x,y are 1D → build meshgrid
     if x.ndim == 1 and y.ndim == 1:
         X, Y = np.meshgrid(x, y)
-
-    # Case 2: x,y already 2D → use directly
     elif x.ndim == 2 and y.ndim == 2:
         X, Y = x, y
-
     else:
-        raise ValueError("x and y must be either both 1D or both 2D arrays")
+        raise ValueError("x and y must be both 1D or both 2D arrays")
 
-    # ------------------------------------------------------------
-    # 2D color plotting via pcolormesh
-    # ------------------------------------------------------------
+    # Plot
     mesh = ax.pcolormesh(
         X, Y, Z,
         cmap=cmap,
@@ -101,41 +95,47 @@ def plot2D_pcolormesh_panel_core(
         vmax=vmax
     )
 
-    # ------------------------------------------------------------
-    # Apply axis limits if given
-    # ------------------------------------------------------------
+    # Axis limits
     if xlim is not None:
         ax.set_xlim(xlim)
     if ylim is not None:
         ax.set_ylim(ylim)
 
-    # ------------------------------------------------------------
-    # Tick styling
-    # ------------------------------------------------------------
+    # Ticks
     if show_ticks:
         ax.tick_params(labelsize=ticks_fontsize,
                        width=0.4,
-                       length=1.8)
-        ax.tick_params(direction="in",
-                       length=1.0,
-                       width=0.5,
+                       length=1.8,
+                       direction="in",
                        top=True,
                        right=True)
     else:
-        ax.set_xticks([]); ax.set_yticks([])
+        ax.set_xticks([])
+        ax.set_yticks([])
 
-    # ------------------------------------------------------------
-    # Labeling & Title
-    # ------------------------------------------------------------
+    # Custom ticks
+    if xticks is not None:
+        ax.set_xticks(xticks)
+        if xticklabels is not None:
+            ax.set_xticklabels(xticklabels, fontsize=ticks_fontsize)
+
+    if yticks is not None:
+        ax.set_yticks(yticks)
+        if yticklabels is not None:
+            ax.set_yticklabels(yticklabels, fontsize=ticks_fontsize)
+
+    # Labels
     ax.set_xlabel(xlabel, fontsize=fontsize)
     ax.set_ylabel(ylabel, fontsize=fontsize)
 
+    # Title
     if title is not None:
         ax.set_title(title, fontsize=fontsize, pad=1.5)
 
     ax.set_aspect(aspect)
 
     return ax, mesh
+
 
 def add_colorbar_cm(
         fig, im,
