@@ -1,5 +1,6 @@
 import numpy as np
 from .figure import add_axes_cm
+import matplotlib as mpl
 
 def plot2D_panel_core(
         fig, x, y, Z,
@@ -137,22 +138,62 @@ def plot2D_pcolormesh_panel_core(
     return ax, mesh
 
 
+
+
 def add_colorbar_cm(
-        fig, im,
+        fig,
         pos_cm=(0, 0),
         size_cm=(0.2, 3.5),
+        vmin=0.0,
+        vmax=1.0,
+        cmap="viridis",
         clabel=None,
         fontsize=7,
         ticks_fontsize=6,
         tick_direction="in",
-        orientation="vertical"
+        orientation="vertical",
+        ticks=None
 ):
-    """Add a manually positioned colorbar (in cm units)."""
+    """
+    Add a manually positioned colorbar in cm coordinates,
+    independent of any image/mappable.
+
+    Parameters
+    ----------
+    vmin, vmax : float
+        Data range for the color scale.
+    cmap : str or Colormap
+        Colormap for the colorbar.
+    ticks : list or None
+        Optional explicit tick locations.
+    """
+
+    # --- Create axes in cm ---
     cax = add_axes_cm(fig, pos_cm[0], pos_cm[1], size_cm[0], size_cm[1])
 
-    cbar = fig.colorbar(im, cax=cax, orientation=orientation)
-    cbar.ax.tick_params(labelsize=ticks_fontsize, width=0.4, length=1.5,
-                        direction=tick_direction)
+    # --- Create artificial mappable (standalone color scale) ---
+    norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
+    sm = mpl.cm.ScalarMappable(norm=norm, cmap=cmap)
+    sm.set_array([])  # required by Matplotlib
+
+    # --- Draw colorbar ---
+    cbar = fig.colorbar(sm, cax=cax, orientation=orientation)
+
+    # --- Apply ticks if given ---
+    if ticks is not None:
+        cbar.set_ticks(ticks)
+
+    # --- Tick styling ---
+    cbar.ax.tick_params(
+        labelsize=ticks_fontsize,
+        width=0.4,
+        length=1.5,
+        direction=tick_direction
+    )
+
+    # --- Label ---
     if clabel:
         cbar.set_label(clabel, fontsize=fontsize, labelpad=1.2)
+
     return cbar
+
