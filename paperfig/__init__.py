@@ -28,6 +28,7 @@ from .panel_1d import (
 # --- 2D panel tools ---
 from .panel_2d import (
     plot2D_panel_core,
+    plot2D_pcolormesh_panel_core,
     add_colorbar_cm
 )
 
@@ -52,6 +53,7 @@ __all__ = [
     "plotLinLin_panel_core",
     "plotLogLog_panel_core",
     "plot2D_panel_core",
+    "plot2D_pcolormesh_panel_core",
     "add_colorbar_cm",
     "quiver3_advanced",
     "quiver3_advanced_panel",
