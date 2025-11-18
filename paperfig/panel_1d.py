@@ -360,7 +360,7 @@ def plotScatter2D_panel_core(
             handletextpad=0.4
         )
 
-    ax.grid(zorder=0)
+    ax.set_axisbelow(True)
         
     return ax
 
