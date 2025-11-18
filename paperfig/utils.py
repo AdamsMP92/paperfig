@@ -46,7 +46,9 @@ def apply_tick_style(
         xticks=None,
         yticks=None,
         xticklabels=None,
-        yticklabels=None
+        yticklabels=None, 
+        disable_xticklabels=False,
+        disable_yticklabels=False
 ):
     """Unified tick styling for 1D and 2D plots."""
 
@@ -55,17 +57,24 @@ def apply_tick_style(
         ax.set_yticks([])
         return ax
 
-    # Set tick positions
-    if xticks is not None:
-        ax.set_xticks(xticks)
-        if xticklabels is not None:
-            ax.set_xticklabels(xticklabels, fontsize=ticks_fontsize)
+    # -----------------------------------
+    # Disable tick labels before anything
+    # -----------------------------------
+    if disable_xticklabels:
+        ax.tick_params(labelbottom=False)
+    if disable_yticklabels:
+        ax.tick_params(labelleft=False)
 
-    if yticks is not None:
-        ax.set_yticks(yticks)
-        if yticklabels is not None:
-            ax.set_yticklabels(yticklabels, fontsize=ticks_fontsize)
+    # -----------------------------------
+    # Set tick labels (if not disabled)
+    # -----------------------------------
+  
+    if not disable_xticklabels and xticklabels is not None:
+        ax.set_xticklabels(xticklabels, fontsize=ticks_fontsize)
 
+    if not disable_yticklabels and yticklabels is not None:
+        ax.set_yticklabels(yticklabels, fontsize=ticks_fontsize)
+    
     # Major ticks
     ax.tick_params(
         which="major",
