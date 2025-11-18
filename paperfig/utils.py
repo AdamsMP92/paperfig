@@ -59,27 +59,17 @@ def apply_tick_style(
         return ax
 
     # --------------------------------------------------------------------
+    # IMPORTANT: Enable minor ticks FIRST so they don't overwrite later.
+    # --------------------------------------------------------------------
+    ax.minorticks_on()
+    
+    # --------------------------------------------------------------------
     # First SET tick positions so formatter knows what to label
     # --------------------------------------------------------------------
     if xticks is not None:
         ax.set_xticks(xticks)
     if yticks is not None:
         ax.set_yticks(yticks)
-
-    # --------------------------------------------------------------------
-    # Disable tick labels (strong version – overrides ANY formatter)
-    # --------------------------------------------------------------------
-    if disable_xticklabels:
-        ax.set_xticklabels([])
-        ax.xaxis.set_major_formatter(mticker.FuncFormatter(lambda *args: ""))
-        ax.xaxis.set_minor_formatter(mticker.FuncFormatter(lambda *args: ""))
-        ax.tick_params(labelbottom=False)
-
-    if disable_yticklabels:
-        ax.set_yticklabels([])
-        ax.yaxis.set_major_formatter(mticker.FuncFormatter(lambda *args: ""))
-        ax.yaxis.set_minor_formatter(mticker.FuncFormatter(lambda *args: ""))
-        ax.tick_params(labelleft=False)
 
     # --------------------------------------------------------------------
     # IF NOT disabled: apply custom ticklabels (if provided)
@@ -112,7 +102,21 @@ def apply_tick_style(
         right=True
     )
 
-    ax.minorticks_on()
+    # --------------------------------------------------------------------
+    # Disable tick labels (strong version – overrides ANY formatter)
+    # --------------------------------------------------------------------
+    if disable_xticklabels:
+        ax.set_xticklabels([])
+        ax.xaxis.set_major_formatter(mticker.FuncFormatter(lambda *args: ""))
+        ax.xaxis.set_minor_formatter(mticker.FuncFormatter(lambda *args: ""))
+        ax.tick_params(labelbottom=False)
+
+    if disable_yticklabels:
+        ax.set_yticklabels([])
+        ax.yaxis.set_major_formatter(mticker.FuncFormatter(lambda *args: ""))
+        ax.yaxis.set_minor_formatter(mticker.FuncFormatter(lambda *args: ""))
+        ax.tick_params(labelleft=False)
+    
     return ax
 
 
