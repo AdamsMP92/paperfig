@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pyvista as pv
+import matplotlib.ticker as mticker
 
 def crop_image(img, left=0, right=0, top=0, bottom=0):
     h, w = img.shape[:2]
@@ -57,25 +58,41 @@ def apply_tick_style(
         ax.set_yticks([])
         return ax
 
-    # -----------------------------------
-    # Disable tick labels before anything
-    # -----------------------------------
+    # --------------------------------------------------------------------
+    # First SET tick positions so formatter knows what to label
+    # --------------------------------------------------------------------
+    if xticks is not None:
+        ax.set_xticks(xticks)
+    if yticks is not None:
+        ax.set_yticks(yticks)
+
+    # --------------------------------------------------------------------
+    # Disable tick labels (strong version – overrides ANY formatter)
+    # --------------------------------------------------------------------
     if disable_xticklabels:
+        ax.set_xticklabels([])
+        ax.xaxis.set_major_formatter(mticker.FuncFormatter(lambda *args: ""))
+        ax.xaxis.set_minor_formatter(mticker.FuncFormatter(lambda *args: ""))
         ax.tick_params(labelbottom=False)
+
     if disable_yticklabels:
+        ax.set_yticklabels([])
+        ax.yaxis.set_major_formatter(mticker.FuncFormatter(lambda *args: ""))
+        ax.yaxis.set_minor_formatter(mticker.FuncFormatter(lambda *args: ""))
         ax.tick_params(labelleft=False)
 
-    # -----------------------------------
-    # Set tick labels (if not disabled)
-    # -----------------------------------
-  
+    # --------------------------------------------------------------------
+    # IF NOT disabled: apply custom ticklabels (if provided)
+    # --------------------------------------------------------------------
     if not disable_xticklabels and xticklabels is not None:
         ax.set_xticklabels(xticklabels, fontsize=ticks_fontsize)
 
     if not disable_yticklabels and yticklabels is not None:
         ax.set_yticklabels(yticklabels, fontsize=ticks_fontsize)
-    
-    # Major ticks
+
+    # --------------------------------------------------------------------
+    # Aesthetics
+    # --------------------------------------------------------------------
     ax.tick_params(
         which="major",
         direction="in",
@@ -86,7 +103,6 @@ def apply_tick_style(
         right=True
     )
 
-    # Minor ticks
     ax.tick_params(
         which="minor",
         direction="in",
@@ -98,6 +114,7 @@ def apply_tick_style(
 
     ax.minorticks_on()
     return ax
+
 
 
 def apply_grid_style(
