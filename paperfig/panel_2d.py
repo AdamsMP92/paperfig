@@ -13,37 +13,65 @@ def plot2D_panel_core(
         title=None,
         vmin=None,
         vmax=None,
+        xlim=None,
+        ylim=None,
+        xticks=None,
+        yticks=None,
+        xticklabels=None,
+        yticklabels=None,
         fontsize=7,
         ticks_fontsize=6,
         show_ticks=True,
-        aspect="equal"
+        aspect="equal",
+        major_tick_length=2.0,
+        major_tick_width=0.45,
+        minor_tick_length=1.2,
+        minor_tick_width=0.35
 ):
-    """Create a fixed-size 2D map panel without colorbar."""
+    """2D imshow panel with unified tick style."""
+    
     ax = add_axes_cm(fig, pos_cm[0], pos_cm[1], size_cm[0], size_cm[1])
+
     im = ax.imshow(
-        Z, extent=[x.min(), x.max(), y.min(), y.max()],
-        cmap=cmap, origin="lower",
-        vmin=vmin, vmax=vmax, aspect=aspect
+        Z,
+        extent=[x.min(), x.max(), y.min(), y.max()],
+        cmap=cmap,
+        origin="lower",
+        vmin=vmin,
+        vmax=vmax,
+        aspect=aspect
     )
 
-    if show_ticks:
-        ax.tick_params(labelsize=ticks_fontsize,
-                       width=0.4,
-                       length=1.8)
-        ax.tick_params(direction="in",
-                       length=1.0,
-                       width=0.5,
-                       top=True,
-                       right=True)
-    else:
-        ax.set_xticks([]); ax.set_yticks([])
+    # Limits
+    if xlim is not None:
+        ax.set_xlim(xlim)
+    if ylim is not None:
+        ax.set_ylim(ylim)
 
+    # Unified ticks
+    apply_tick_style(
+        ax,
+        show_ticks,
+        ticks_fontsize,
+        major_tick_length,
+        major_tick_width,
+        minor_tick_length,
+        minor_tick_width,
+        xticks,
+        yticks,
+        xticklabels,
+        yticklabels
+    )
+
+    # Labels and title
     ax.set_xlabel(xlabel, fontsize=fontsize)
     ax.set_ylabel(ylabel, fontsize=fontsize)
+
     if title:
         ax.set_title(title, fontsize=fontsize, pad=1.5)
 
     return ax, im
+
 
 def plot2D_pcolormesh_panel_core(
         fig, x, y, Z,
@@ -65,30 +93,24 @@ def plot2D_pcolormesh_panel_core(
         ticks_fontsize=6,
         show_ticks=True,
         aspect="equal",
-        shading="auto"
+        shading="auto",
+        major_tick_length=2.0,
+        major_tick_width=0.45,
+        minor_tick_length=1.2,
+        minor_tick_width=0.35
 ):
-    """
-    Create a fixed-size 2D map panel using pcolormesh.
-    Supports:
-      - x,y as 1D axes
-      - x,y as 2D meshgrid
-      - custom xticks / yticks / ticklabels
-    """
+    """2D pcolormesh panel with unified tick style and custom labels."""
 
     ax = add_axes_cm(fig, pos_cm[0], pos_cm[1], size_cm[0], size_cm[1])
 
-    # Normalize axes
     x = np.asarray(x)
     y = np.asarray(y)
 
     if x.ndim == 1 and y.ndim == 1:
         X, Y = np.meshgrid(x, y)
-    elif x.ndim == 2 and y.ndim == 2:
-        X, Y = x, y
     else:
-        raise ValueError("x and y must be both 1D or both 2D arrays")
+        X, Y = x, y
 
-    # Plot
     mesh = ax.pcolormesh(
         X, Y, Z,
         cmap=cmap,
@@ -97,45 +119,31 @@ def plot2D_pcolormesh_panel_core(
         vmax=vmax
     )
 
-    # Axis limits
     if xlim is not None:
         ax.set_xlim(xlim)
     if ylim is not None:
         ax.set_ylim(ylim)
 
-    # Ticks
-    if show_ticks:
-        ax.tick_params(labelsize=ticks_fontsize,
-                       width=0.4,
-                       length=1.8,
-                       direction="in",
-                       top=True,
-                       right=True)
-    else:
-        ax.set_xticks([])
-        ax.set_yticks([])
+    apply_tick_style(
+        ax,
+        show_ticks,
+        ticks_fontsize,
+        major_tick_length,
+        major_tick_width,
+        minor_tick_length,
+        minor_tick_width,
+        xticks,
+        yticks,
+        xticklabels,
+        yticklabels
+    )
 
-    # Custom ticks
-    if xticks is not None:
-        ax.set_xticks(xticks)
-        if xticklabels is not None:
-            ax.set_xticklabels(xticklabels, fontsize=ticks_fontsize)
-
-    if yticks is not None:
-        ax.set_yticks(yticks)
-        if yticklabels is not None:
-            ax.set_yticklabels(yticklabels, fontsize=ticks_fontsize)
-
-    # Labels
     ax.set_xlabel(xlabel, fontsize=fontsize)
     ax.set_ylabel(ylabel, fontsize=fontsize)
-
-    # Title
-    if title is not None:
+    if title:
         ax.set_title(title, fontsize=fontsize, pad=1.5)
 
     ax.set_aspect(aspect)
-
     return ax, mesh
 
 
@@ -151,50 +159,38 @@ def add_colorbar_cm(
         clabel=None,
         fontsize=7,
         ticks_fontsize=6,
+        ticks=None,
+        major_tick_length=2.0,
+        major_tick_width=0.45,
+        minor_tick_length=1.0,
+        minor_tick_width=0.35,
         tick_direction="in",
-        orientation="vertical",
-        ticks=None
+        orientation="vertical"
 ):
-    """
-    Add a manually positioned colorbar in cm coordinates,
-    independent of any image/mappable.
+    """Colorbar with unified tick styling."""
 
-    Parameters
-    ----------
-    vmin, vmax : float
-        Data range for the color scale.
-    cmap : str or Colormap
-        Colormap for the colorbar.
-    ticks : list or None
-        Optional explicit tick locations.
-    """
-
-    # --- Create axes in cm ---
     cax = add_axes_cm(fig, pos_cm[0], pos_cm[1], size_cm[0], size_cm[1])
 
-    # --- Create artificial mappable (standalone color scale) ---
     norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
     sm = mpl.cm.ScalarMappable(norm=norm, cmap=cmap)
-    sm.set_array([])  # required by Matplotlib
+    sm.set_array([])
 
-    # --- Draw colorbar ---
     cbar = fig.colorbar(sm, cax=cax, orientation=orientation)
 
-    # --- Apply ticks if given ---
     if ticks is not None:
         cbar.set_ticks(ticks)
 
-    # --- Tick styling ---
     cbar.ax.tick_params(
+        which="major",
         labelsize=ticks_fontsize,
-        width=0.4,
-        length=1.5,
-        direction=tick_direction
+        direction=tick_direction,
+        length=major_tick_length,
+        width=major_tick_width
     )
 
-    # --- Label ---
     if clabel:
-        cbar.set_label(clabel, fontsize=fontsize, labelpad=1.2)
+        cbar.set_label(clabel, fontsize=fontsize)
 
     return cbar
+
 
