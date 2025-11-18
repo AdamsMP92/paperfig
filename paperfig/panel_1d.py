@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from .figure import add_axes_cm
-from .utils import apply_tick_style
+from .utils import apply_tick_style, apply_label_style, apply_grid_style
 
 
 # ============================================================
@@ -35,15 +35,13 @@ def plotLogLog_panel_core(
         minor_tick_length=1.6,
         minor_tick_width=0.35,
 ):
-    """
-    Unified log–log panel with consistent tick styling.
-    """
+    """Unified log–log panel with consistent tick/grid/label styling."""
 
     ax = add_axes_cm(fig, pos_cm[0], pos_cm[1], size_cm[0], size_cm[1])
     ax.set_xscale("log")
     ax.set_yscale("log")
 
-    # Cycle defaults
+    # Cycles
     if colors is None:
         colors = plt.rcParams["axes.prop_cycle"].by_key()["color"]
     if linestyles is None:
@@ -51,10 +49,9 @@ def plotLogLog_panel_core(
 
     # Plot curves
     for i, data in enumerate(curves):
-        x = np.asarray(data["x"])
-        y = np.asarray(data["y"])
         ax.plot(
-            x, y,
+            np.asarray(data["x"]),
+            np.asarray(data["y"]),
             linestyle=linestyles[i % len(linestyles)],
             color=colors[i % len(colors)],
             linewidth=linewidth,
@@ -62,15 +59,14 @@ def plotLogLog_panel_core(
             label=data.get("label", None)
         )
 
-    # Labels + limits
-    ax.set_xlabel(xlabel, fontsize=fontsize)
-    ax.set_ylabel(ylabel, fontsize=fontsize)
-    if title:
-        ax.set_title(title, fontsize=fontsize, pad=1.5)
+    # Apply labels
+    apply_label_style(ax, xlabel, ylabel, title, fontsize)
+
+    # Apply limits
     if xlim: ax.set_xlim(xlim)
     if ylim: ax.set_ylim(ylim)
 
-    # Apply unified ticks
+    # Unified tick styling
     apply_tick_style(
         ax,
         show_ticks,
@@ -79,21 +75,31 @@ def plotLogLog_panel_core(
         major_tick_width,
         minor_tick_length,
         minor_tick_width,
-        xticks,
-        yticks,
-        xticklabels,
-        yticklabels
+        xticks, yticks,
+        xticklabels, yticklabels
     )
 
-    # Grid
-    if grid:
-        ax.grid(which="major", linestyle="-", linewidth=0.3, color="0.85")
-        ax.grid(which="minor", linestyle=":", linewidth=0.2, color="0.85")
+    # Unified grid styling
+    apply_grid_style(
+        ax,
+        show=grid,
+        major=True,
+        minor=True,
+        major_linewidth=0.3,
+        minor_linewidth=0.2,
+        major_color="0.85",
+        minor_color="0.85"
+    )
 
     # Legend
     if legend and any("label" in c for c in curves):
-        ax.legend(fontsize=ticks_fontsize, frameon=False, loc="best",
-                  handlelength=2.2, handletextpad=0.4)
+        ax.legend(
+            fontsize=ticks_fontsize,
+            frameon=False,
+            loc="best",
+            handlelength=2.2,
+            handletextpad=0.4
+        )
 
     return ax
 
@@ -130,9 +136,7 @@ def plotLinLin_panel_core(
         minor_tick_length=1.2,
         minor_tick_width=0.35,
 ):
-    """
-    Unified linear panel with consistent tick styling.
-    """
+    """Unified linear panel with consistent tick/grid/label styling."""
 
     ax = add_axes_cm(fig, pos_cm[0], pos_cm[1], size_cm[0], size_cm[1])
 
@@ -152,15 +156,14 @@ def plotLinLin_panel_core(
             label=data.get("label", None)
         )
 
-    # Labels & limits
-    ax.set_xlabel(xlabel, fontsize=fontsize)
-    ax.set_ylabel(ylabel, fontsize=fontsize)
-    if title:
-        ax.set_title(title, fontsize=fontsize, pad=1.5)
+    # Apply labels
+    apply_label_style(ax, xlabel, ylabel, title, fontsize)
+
+    # Apply limits
     if xlim: ax.set_xlim(xlim)
     if ylim: ax.set_ylim(ylim)
 
-    # Unified tick system
+    # Apply ticks
     apply_tick_style(
         ax,
         show_ticks,
@@ -169,20 +172,29 @@ def plotLinLin_panel_core(
         major_tick_width,
         minor_tick_length,
         minor_tick_width,
-        xticks,
-        yticks,
-        xticklabels,
-        yticklabels
+        xticks, yticks,
+        xticklabels, yticklabels
     )
 
-    # Grid
-    if grid:
-        ax.grid(True, linestyle="-", linewidth=0.25, color="0.85")
+    # Apply grid
+    apply_grid_style(
+        ax,
+        show=grid,
+        major=True,
+        minor=False,
+        major_linewidth=0.25,
+        major_color="0.85"
+    )
 
     # Legend
     if legend and any("label" in c for c in curves):
-        ax.legend(fontsize=ticks_fontsize, frameon=False, loc="best",
-                  handlelength=2.2, handletextpad=0.4)
+        ax.legend(
+            fontsize=ticks_fontsize,
+            frameon=False,
+            loc="best",
+            handlelength=2.2,
+            handletextpad=0.4
+        )
 
     return ax
 
@@ -220,9 +232,7 @@ def plotScatter2D_panel_core(
         minor_tick_length=1.2,
         minor_tick_width=0.35,
 ):
-    """
-    Unified scatter panel with consistent tick styling.
-    """
+    """Unified scatter panel with consistent tick/grid/label styling."""
 
     ax = add_axes_cm(fig, pos_cm[0], pos_cm[1], size_cm[0], size_cm[1])
 
@@ -233,7 +243,7 @@ def plotScatter2D_panel_core(
     if edgecolors is None:
         edgecolors = "none"
 
-    # Plot datasets
+    # Plot scatter datasets
     for i, data in enumerate(datasets):
         ax.scatter(
             data["x"], data["y"],
@@ -245,16 +255,14 @@ def plotScatter2D_panel_core(
             label=data.get("label", None)
         )
 
-    # Labels
-    ax.set_xlabel(xlabel, fontsize=fontsize)
-    ax.set_ylabel(ylabel, fontsize=fontsize)
-    if title:
-        ax.set_title(title, fontsize=fontsize, pad=1.5)
+    # Apply labels
+    apply_label_style(ax, xlabel, ylabel, title, fontsize)
 
+    # Apply limits
     if xlim: ax.set_xlim(xlim)
     if ylim: ax.set_ylim(ylim)
 
-    # Unified tick styling
+    # Apply ticks
     apply_tick_style(
         ax,
         show_ticks,
@@ -263,20 +271,30 @@ def plotScatter2D_panel_core(
         major_tick_width,
         minor_tick_length,
         minor_tick_width,
-        xticks,
-        yticks,
-        xticklabels,
-        yticklabels
+        xticks, yticks,
+        xticklabels, yticklabels
     )
 
-    # Grid
-    if grid:
-        ax.grid(True, linestyle="-", linewidth=0.4, alpha=0.6)
+    # Apply grid
+    apply_grid_style(
+        ax,
+        show=grid,
+        major=True,
+        minor=False,
+        major_linewidth=0.4,
+        major_color="0.8",
+        alpha=0.6
+    )
 
     # Legend
     if legend and any("label" in d for d in datasets):
-        ax.legend(fontsize=ticks_fontsize, frameon=False, loc="best",
-                  handlelength=1.8, handletextpad=0.4)
+        ax.legend(
+            fontsize=ticks_fontsize,
+            frameon=False,
+            loc="best",
+            handlelength=1.8,
+            handletextpad=0.4
+        )
 
     return ax
 
