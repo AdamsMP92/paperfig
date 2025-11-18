@@ -58,6 +58,32 @@ def add_axes_cm(fig, left_cm, bottom_cm, width_cm, height_cm):
         height_cm / (H * 2.54)
     ])
 
+# add_label_cm ########################################
+def add_label_cm(fig, text, x_cm, y_cm, **kwargs):
+    """
+    Add a text label using cm coordinates relative to the figure size.
 
-def add_label_cm(fig, text, x_cm, y_cm, fig_width_cm, fig_height_cm, **kwargs):
-    fig.text(x_cm / fig_width_cm, y_cm / fig_height_cm, text, **kwargs)
+    Parameters
+    ----------
+    fig : matplotlib.figure.Figure
+        The figure to draw on.
+    text : str
+        Label text.
+    x_cm, y_cm : float
+        Position in cm relative to figure size.
+    **kwargs : dict
+        Additional styling arguments passed to fig.text().
+    """
+
+    # --- 1) Get figure size in cm ---
+    w_in, h_in = fig.get_size_inches()
+    w_cm = w_in * 2.54
+    h_cm = h_in * 2.54
+
+    # --- 2) Normalize cm → figure coordinates ---
+    x_rel = x_cm / w_cm
+    y_rel = y_cm / h_cm
+
+    # --- 3) Add text ---
+    fig.text(x_rel, y_rel, text, **kwargs)
+
