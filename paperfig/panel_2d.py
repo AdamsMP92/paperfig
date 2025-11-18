@@ -1,5 +1,6 @@
 import numpy as np
 from .figure import add_axes_cm
+from .utils import apply_tick_style
 import matplotlib as mpl
 
 def plot2D_panel_core(
