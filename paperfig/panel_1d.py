@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from .figure import add_axes_cm
-
+from .utils import apply_tick_style
 
 def plotLogLog_panel_core(
         fig,
