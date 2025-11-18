@@ -22,7 +22,9 @@ def plotLogLog_panel_core(
         xticklabels=None,
         yticklabels=None,
         options=None,
-        markersize=1.0
+        markersize=1.0, 
+        disable_xticklabels=False,
+        disable_yticklabels=False
 ):
     """Unified log–log panel using PaperFigOptions."""
 
@@ -91,7 +93,9 @@ def plotLogLog_panel_core(
         xticks=xticks,
         yticks=yticks,
         xticklabels=xticklabels,
-        yticklabels=yticklabels
+        yticklabels=yticklabels, 
+        disable_xticklabels=False,
+        disable_yticklabels=False
     )
 
     # ---------------------------------------------------------
