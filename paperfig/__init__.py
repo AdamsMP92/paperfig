@@ -22,7 +22,8 @@ from .utils import (
 # --- 1D panel tools ---
 from .panel_1d import (
     plotLinLin_panel_core,
-    plotLogLog_panel_core
+    plotLogLog_panel_core,
+    plotScatter2D_panel_core
 )
 
 # --- 2D panel tools ---
@@ -53,6 +54,7 @@ __all__ = [
     "add_reference_axes",
     "plotLinLin_panel_core",
     "plotLogLog_panel_core",
+    "plotScatter2D_panel_core",
     "plot2D_panel_core",
     "plot2D_pcolormesh_panel_core",
     "add_colorbar_cm",
