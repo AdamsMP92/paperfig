@@ -17,7 +17,9 @@ from .utils import (
     crop_image,
     Show_Axes_Margins,
     add_reference_axes,
-    apply_tick_style
+    apply_tick_style,
+    apply_label_style,
+    apply_grid_style
 )
 
 # --- 1D panel tools ---
@@ -63,5 +65,7 @@ __all__ = [
     "quiver3_advanced_panel",
     "PlotVectorfieldPanel",
     "plot_vectorfield_panels",
-    "apply_tick_style"
+    "apply_tick_style",
+    "apply_label_style",
+    "apply_grid_style"
 ]
