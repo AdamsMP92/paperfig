@@ -90,3 +90,75 @@ def apply_tick_style(
     ax.minorticks_on()
     return ax
 
+
+def apply_grid_style(
+        ax,
+        show=True,
+        major=True,
+        minor=False,
+        major_linestyle="-",
+        minor_linestyle=":",
+        major_color="0.85",
+        minor_color="0.9",
+        major_linewidth=0.3,
+        minor_linewidth=0.2,
+        alpha=1.0
+):
+    """
+    Unified, publication-ready grid styling for any Axes.
+    """
+
+    if not show:
+        ax.grid(False)
+        return ax
+
+    # Major grid
+    if major:
+        ax.grid(
+            True,
+            which="major",
+            linestyle=major_linestyle,
+            linewidth=major_linewidth,
+            color=major_color,
+            alpha=alpha
+        )
+
+    # Minor grid
+    if minor:
+        ax.grid(
+            True,
+            which="minor",
+            linestyle=minor_linestyle,
+            linewidth=minor_linewidth,
+            color=minor_color,
+            alpha=alpha
+        )
+
+    return ax
+
+
+def apply_label_style(
+        ax,
+        xlabel=None,
+        ylabel=None,
+        title=None,
+        fontsize=7,
+        labelpad=1.5,
+        titlepad=1.5
+):
+    """
+    Unified labeling for axes: xlabel, ylabel, and title.
+    Clean, consistent, and compact.
+    """
+
+    if xlabel is not None:
+        ax.set_xlabel(xlabel, fontsize=fontsize, labelpad=labelpad)
+
+    if ylabel is not None:
+        ax.set_ylabel(ylabel, fontsize=fontsize, labelpad=labelpad)
+
+    if title is not None:
+        ax.set_title(title, fontsize=fontsize, pad=titlepad)
+
+    return ax
+
