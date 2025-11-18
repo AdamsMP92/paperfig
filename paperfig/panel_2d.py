@@ -1,8 +1,12 @@
 import numpy as np
-from .figure import add_axes_cm
-from .utils import apply_tick_style
 import matplotlib as mpl
+from .figure import add_axes_cm
+from .utils import apply_tick_style, apply_label_style, apply_grid_style
 
+
+# ============================================================
+# 1) 2D IM SHOW PANEL
+# ============================================================
 def plot2D_panel_core(
         fig, x, y, Z,
         pos_cm=(0, 0),
@@ -23,12 +27,13 @@ def plot2D_panel_core(
         ticks_fontsize=6,
         show_ticks=True,
         aspect="equal",
+        grid=False,
         major_tick_length=2.0,
         major_tick_width=0.45,
         minor_tick_length=1.2,
         minor_tick_width=0.35
 ):
-    """2D imshow panel with unified tick style."""
+    """2D imshow panel with unified label/grid/tick styling."""
     
     ax = add_axes_cm(fig, pos_cm[0], pos_cm[1], size_cm[0], size_cm[1])
 
@@ -48,7 +53,7 @@ def plot2D_panel_core(
     if ylim is not None:
         ax.set_ylim(ylim)
 
-    # Unified ticks
+    # Apply ticks
     apply_tick_style(
         ax,
         show_ticks,
@@ -63,16 +68,26 @@ def plot2D_panel_core(
         yticklabels
     )
 
-    # Labels and title
-    ax.set_xlabel(xlabel, fontsize=fontsize)
-    ax.set_ylabel(ylabel, fontsize=fontsize)
+    # Apply labels
+    apply_label_style(ax, xlabel, ylabel, title, fontsize)
 
-    if title:
-        ax.set_title(title, fontsize=fontsize, pad=1.5)
+    # Apply grid (optional)
+    apply_grid_style(
+        ax,
+        show=grid,
+        major=True,
+        minor=False,
+        major_linewidth=0.25,
+        major_color="0.8"
+    )
 
     return ax, im
 
 
+
+# ============================================================
+# 2) 2D PCOLORMESH PANEL
+# ============================================================
 def plot2D_pcolormesh_panel_core(
         fig, x, y, Z,
         pos_cm=(0, 0),
@@ -93,13 +108,14 @@ def plot2D_pcolormesh_panel_core(
         ticks_fontsize=6,
         show_ticks=True,
         aspect="equal",
+        grid=False,
         shading="auto",
         major_tick_length=2.0,
         major_tick_width=0.45,
         minor_tick_length=1.2,
         minor_tick_width=0.35
 ):
-    """2D pcolormesh panel with unified tick style and custom labels."""
+    """2D pcolormesh panel with unified label/grid/tick styling."""
 
     ax = add_axes_cm(fig, pos_cm[0], pos_cm[1], size_cm[0], size_cm[1])
 
@@ -119,11 +135,13 @@ def plot2D_pcolormesh_panel_core(
         vmax=vmax
     )
 
+    # Axis limits
     if xlim is not None:
         ax.set_xlim(xlim)
     if ylim is not None:
         ax.set_ylim(ylim)
 
+    # Unified tick system
     apply_tick_style(
         ax,
         show_ticks,
@@ -138,17 +156,27 @@ def plot2D_pcolormesh_panel_core(
         yticklabels
     )
 
-    ax.set_xlabel(xlabel, fontsize=fontsize)
-    ax.set_ylabel(ylabel, fontsize=fontsize)
-    if title:
-        ax.set_title(title, fontsize=fontsize, pad=1.5)
+    # Unified labels
+    apply_label_style(ax, xlabel, ylabel, title, fontsize)
+
+    # Optional grid
+    apply_grid_style(
+        ax,
+        show=grid,
+        major=True,
+        minor=False,
+        major_linewidth=0.25,
+        major_color="0.8"
+    )
 
     ax.set_aspect(aspect)
     return ax, mesh
 
 
 
-
+# ============================================================
+# 3) COLORBAR (CM-PLACED)
+# ============================================================
 def add_colorbar_cm(
         fig,
         pos_cm=(0, 0),
@@ -167,7 +195,7 @@ def add_colorbar_cm(
         tick_direction="in",
         orientation="vertical"
 ):
-    """Colorbar with unified tick styling."""
+    """Colorbar with unified tick + label styling."""
 
     cax = add_axes_cm(fig, pos_cm[0], pos_cm[1], size_cm[0], size_cm[1])
 
@@ -180,6 +208,7 @@ def add_colorbar_cm(
     if ticks is not None:
         cbar.set_ticks(ticks)
 
+    # Tick styling
     cbar.ax.tick_params(
         which="major",
         labelsize=ticks_fontsize,
@@ -188,9 +217,8 @@ def add_colorbar_cm(
         width=major_tick_width
     )
 
+    # Label styling
     if clabel:
-        cbar.set_label(clabel, fontsize=fontsize)
+        cbar.set_label(clabel, fontsize=fontsize, labelpad=1.5)
 
     return cbar
-
-
