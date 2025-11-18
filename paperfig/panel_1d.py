@@ -21,7 +21,8 @@ def plotLogLog_panel_core(
         yticks=None,
         xticklabels=None,
         yticklabels=None,
-        options=None
+        options=None,
+        markersize=1.0
 ):
     """Unified log–log panel using PaperFigOptions."""
 
@@ -57,7 +58,7 @@ def plotLogLog_panel_core(
             linestyle=linestyles[i % len(linestyles)],
             color=colors[i % len(colors)],
             linewidth=opts.linewidth,
-            markersize=3.0,
+            markersize=markersize,
             label=data.get("label", None)
         )
 
@@ -146,7 +147,8 @@ def plotLinLin_panel_core(
         yticks=None,
         xticklabels=None,
         yticklabels=None,
-        options=None
+        options=None,
+        markersize=1.0
 ):
     """Unified linear panel using PaperFigOptions."""
 
@@ -179,7 +181,7 @@ def plotLinLin_panel_core(
             linestyle=linestyles[i % len(linestyles)],
             color=colors[i % len(colors)],
             linewidth=opts.linewidth,
-            markersize=3.0,
+            markersize=markersize,
             label=data.get("label", None)
         )
 
@@ -260,6 +262,8 @@ def plotScatter2D_panel_core(
         yticks=None,
         xticklabels=None,
         yticklabels=None,
+        markersize=1.0,
+        alpha=0.8,
         options=None
 ):
     """Unified scatter panel using PaperFigOptions."""
@@ -290,9 +294,9 @@ def plotScatter2D_panel_core(
     for i, data in enumerate(datasets):
         ax.scatter(
             data["x"], data["y"],
-            s=10,                      # base marker size
+            s=markersize,                      # base marker size
             color=colors[i % len(colors)],
-            alpha=0.8,
+            alpha=alpha,
             marker=markerstyles[i % len(markerstyles)],
             edgecolors="none",
             label=data.get("label", None)
