@@ -247,54 +247,23 @@ def plotScatter2D_panel_core(
         alpha=0.8,
         markerstyles=None,
         colors=None,
-        edgecolors=None
+        edgecolors=None,
+        # ==== NEW TICK SETTINGS ====
+        xticks=None,
+        yticks=None,
+        tick_length_major=2.0,
+        tick_length_minor=1.2,
+        tick_width_major=0.45,
+        tick_width_minor=0.35
 ):
     """
-    Create a fixed-size 2D scatter plot panel for multiple datasets.
-
-    Parameters
-    ----------
-    fig : matplotlib.figure.Figure
-        Target figure object.
-    datasets : list of dict
-        Each entry: {"x": array, "y": array, "label": str (optional)}.
-    pos_cm : tuple (x_cm, y_cm)
-        Lower-left corner of panel in centimeters.
-    size_cm : tuple (w_cm, h_cm)
-        Panel size in centimeters.
-    xlabel, ylabel, title : str
-        Axis labels and optional title.
-    xlim, ylim : tuple
-        Axis limits.
-    fontsize, ticks_fontsize : float
-        Font sizes.
-    show_ticks : bool
-        Whether to show tick labels.
-    grid : bool
-        Show grid lines.
-    legend : bool
-        Display legend if any labels are given.
-    markersize : float
-        Marker size.
-    alpha : float
-        Transparency (0–1).
-    markerstyles : list of str
-        Optional list of marker symbols (e.g. ['o', 's', '^']).
-    colors : list
-        Optional list of colors.
-    edgecolors : list or str
-        Optional edge color(s) for markers.
-
-    Returns
-    -------
-    ax : matplotlib.axes.Axes
-        Created axis handle.
+    Extended version: allows external control over ticks (locations, length, width).
     """
 
-    # === Create axes in physical units ===
+    # --- create axes in cm ---
     ax = add_axes_cm(fig, pos_cm[0], pos_cm[1], size_cm[0], size_cm[1])
 
-    # === Color/style cycles ===
+    # Color cycles
     if colors is None:
         colors = plt.rcParams["axes.prop_cycle"].by_key()["color"]
     if markerstyles is None:
@@ -302,7 +271,7 @@ def plotScatter2D_panel_core(
     if edgecolors is None:
         edgecolors = "none"
 
-    # === Plot datasets ===
+    # Plot datasets
     for i, data in enumerate(datasets):
         x = np.asarray(data["x"])
         y = np.asarray(data["y"])
@@ -318,7 +287,7 @@ def plotScatter2D_panel_core(
             label=label
         )
 
-    # === Labels, limits, grid ===
+    # Labels, limits
     ax.set_xlabel(xlabel, fontsize=fontsize)
     ax.set_ylabel(ylabel, fontsize=fontsize)
     if title:
@@ -327,23 +296,45 @@ def plotScatter2D_panel_core(
     if xlim: ax.set_xlim(xlim)
     if ylim: ax.set_ylim(ylim)
 
-    if grid:
-        ax.grid(True, linestyle="--", linewidth=0.4, alpha=0.6)
+    # Custom tick positions
+    if xticks is not None:
+        ax.set_xticks(xticks)
+    if yticks is not None:
+        ax.set_yticks(yticks)
 
-    # === Ticks ===
+    # Tick settings
     if show_ticks:
-        ax.tick_params(labelsize=ticks_fontsize,
-                       width=0.4,
-                       length=1.8)
-        ax.tick_params(direction="in",
-                       length=1.0,
-                       width=0.5,
+
+        # major ticks
+        ax.tick_params(axis="both",
+                       which="major",
+                       labelsize=ticks_fontsize,
+                       length=tick_length_major,
+                       width=tick_width_major,
+                       direction="in",
                        top=True,
                        right=True)
-    else:
-        ax.set_xticks([]); ax.set_yticks([])
 
-    # === Legend ===
+        # minor ticks (only if user allows)
+        ax.tick_params(axis="both",
+                       which="minor",
+                       length=tick_length_minor,
+                       width=tick_width_minor,
+                       direction="in",
+                       top=True,
+                       right=True)
+
+        ax.minorticks_on()
+
+    else:
+        ax.set_xticks([])
+        ax.set_yticks([])
+
+    # Grid
+    if grid:
+        ax.grid(True, linestyle="-", linewidth=0.4, alpha=0.6)
+
+    # Legend
     if legend:
         labels_present = any("label" in d for d in datasets)
         if labels_present:
@@ -354,7 +345,8 @@ def plotScatter2D_panel_core(
                 handlelength=1.8,
                 handletextpad=0.4
             )
-                
+
+    # light overlay grid
     ax.grid(True, linestyle="-", color="0.8", linewidth=0.1)
-        
+
     return ax
