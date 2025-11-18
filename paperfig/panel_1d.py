@@ -94,8 +94,8 @@ def plotLogLog_panel_core(
         yticks=yticks,
         xticklabels=xticklabels,
         yticklabels=yticklabels, 
-        disable_xticklabels=False,
-        disable_yticklabels=False
+        disable_xticklabels=disable_xticklabels,
+        disable_yticklabels=disable_yticklabels
     )
 
     # ---------------------------------------------------------
