@@ -354,5 +354,7 @@ def plotScatter2D_panel_core(
                 handlelength=1.8,
                 handletextpad=0.4
             )
-
+                
+    ax.grid(True, linestyle="-", color="0.8", linewidth=0.1)
+        
     return ax
