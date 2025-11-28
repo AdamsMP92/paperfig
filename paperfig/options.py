@@ -14,9 +14,13 @@ class PaperFigOptions:
 
         # ---- Fonts ----
         fontsize=7,
-        font_family="sans-serif",
-        math_font="stixsans",
-        use_tex=False,
+        #font_family="sans-serif",
+        #math_font="stixsans",
+        #use_tex=False,
+        font_family="serif",
+        math_font="cm",
+        use_tex=True,
+        fontserif="Computer Modern Roman",
 
         # ---- Axis frame ----
         spine_width=0.6,
@@ -48,6 +52,7 @@ class PaperFigOptions:
         self.font_family = font_family
         self.math_font = math_font
         self.use_tex = use_tex
+        self.fontserif=fontserif
 
         self.spine_width = spine_width
         self.spine_color = spine_color

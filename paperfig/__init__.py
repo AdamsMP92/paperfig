@@ -10,7 +10,9 @@ from .options import PaperFigOptions, global_options
 from .figure import (
     create_paper_figure,
     add_axes_cm,
-    add_label_cm
+    add_label_cm,
+    add_folder_box_cm,
+    add_line_cm
 )
 
 # --- Utility helpers ---
@@ -23,7 +25,7 @@ from .utils import (
     apply_grid_style
 )
 
-# --- 1D panel tools ---
+# --- 1D panel tools ---d
 from .panel_1d import (
     plotLinLin_panel_core,
     plotLogLog_panel_core,
@@ -58,6 +60,8 @@ __all__ = [
     "create_paper_figure",
     "add_axes_cm",
     "add_label_cm",
+    "add_folder_box_cm",
+    "add_line_cm"
 
     # Utilities
     "crop_image",

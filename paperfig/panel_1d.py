@@ -45,20 +45,21 @@ def plotLogLog_panel_core(
     ax.set_yscale("log")
 
     # ---------------------------------------------------------
-    # Color / linestyle cycles
-    # ---------------------------------------------------------
-    colors = opts.colors
-    linestyles = ["-"] * len(curves)
-
-    # ---------------------------------------------------------
     # Plot curves
     # ---------------------------------------------------------
     for i, data in enumerate(curves):
+
+        # --- Style resolution: curve overrides > defaults ---
+        linestyle = data.get("ls", data.get("linestyle", "-"))
+        color     = data.get("color", opts.colors[i % len(opts.colors)])
+        marker    = data.get("marker", None)
+
         ax.plot(
             np.asarray(data["x"]),
             np.asarray(data["y"]),
-            linestyle=linestyles[i % len(linestyles)],
-            color=colors[i % len(colors)],
+            linestyle=linestyle,
+            color=color,
+            marker=marker,
             linewidth=opts.linewidth,
             markersize=markersize,
             label=data.get("label", None)
@@ -94,8 +95,8 @@ def plotLogLog_panel_core(
         yticks=yticks,
         xticklabels=xticklabels,
         yticklabels=yticklabels, 
-        disable_xticklabels=False,
-        disable_yticklabels=False
+        disable_xticklabels=disable_xticklabels,
+        disable_yticklabels=disable_yticklabels
     )
 
     # ---------------------------------------------------------
@@ -132,6 +133,7 @@ def plotLogLog_panel_core(
         )
 
     return ax
+
 
 
 # ============================================================
