@@ -6,39 +6,30 @@ from matplotlib.lines import Line2D
 def create_paper_figure(
         width_cm=8.5,
         height_cm=6.0,
-        fontsize=7,
-        dpi=600,
         use_latex=True,
-        use_pgf=False,
         fontfamily="serif",
         fontserif="Computer Modern Roman"
 ):
+   
+    mpl.use("pdf")
     cm = 1 / 2.54
 
     rc = {
-        "figure.dpi": dpi,
-        "savefig.dpi": dpi,
         "axes.linewidth": 0.5,
-        "lines.linewidth": 0.6,
-        "axes.labelsize": fontsize,
-        "axes.titlesize": fontsize,
-        "xtick.labelsize": fontsize - 1,
-        "ytick.labelsize": fontsize - 1,
-        "legend.fontsize": fontsize - 1,
+        "lines.linewidth": 0.6
     }
 
     if use_latex:
         rc.update({
             "text.usetex": True,
             "font.family": "serif",
-            "font.serif": [fontserif],
+            "font.serif": ["Computer Modern"],
             "axes.unicode_minus": False,
+
+            # Optional für perfekte PDF-Fonts
+            "pdf.fonttype": 42,
+            "ps.fonttype": 42,
         })
-        if use_pgf:
-            rc.update({
-                "pgf.texsystem": "pdflatex",
-                "pgf.preamble": r"\usepackage{amsmath,amssymb}\usepackage{siunitx}",
-            })
     else:
         rc.update({
             "text.usetex": False,
@@ -125,7 +116,7 @@ def add_folder_box_cm(fig, x_cm, y_cm, w_cm, h_cm,
     """
 
     if text_kwargs is None:
-        text_kwargs = dict(ha="center", va="center", fontsize=11)
+        text_kwargs = dict(ha="center", va="center")
 
     # --- 1) Figuregröße in cm ---
     fig_w_cm = fig.get_size_inches()[0] * 2.54

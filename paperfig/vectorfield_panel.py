@@ -131,8 +131,7 @@ def PlotVectorfieldPanel(csv_path, figure_path,
     axes_yPos2_cm = 1.2 + y_shift1
 
     dpi_figure = 600
-    fig = create_paper_figure(width_cm=fig_width_cm, height_cm=fig_height_cm,
-                              dpi=dpi_figure, fontsize=7)
+    fig = create_paper_figure(width_cm=fig_width_cm, height_cm=fig_height_cm, dpi=dpi_figure)
 
     add_label_cm(fig, r"(a)", axes_xPos1_cm-0.25, axes_yPos2_cm+axes_width2_cm,
                  fig_width_cm, fig_height_cm)
@@ -170,7 +169,6 @@ def PlotVectorfieldPanel(csv_path, figure_path,
                     pos_cm=(0.1, 3.0),
                     size_cm=(0.1, 0.75),
                     clabel=r"$m_z$",
-                    fontsize=4, ticks_fontsize=4,
                     orientation="vertical")
 
     # ==========================================================

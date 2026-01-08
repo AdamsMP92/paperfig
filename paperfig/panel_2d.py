@@ -66,7 +66,6 @@ def plot2D_panel_core(
     apply_tick_style(
         ax,
         show_ticks=True,
-        ticks_fontsize=opts.ticks_fontsize,
         major_tick_length=opts.major_tick_length,
         major_tick_width=opts.major_tick_width,
         minor_tick_length=opts.minor_tick_length,
@@ -80,7 +79,7 @@ def plot2D_panel_core(
     # ---------------------------------------------------------
     # Labels
     # ---------------------------------------------------------
-    apply_label_style(ax, xlabel, ylabel, title, opts.fontsize)
+    apply_label_style(ax, xlabel, ylabel, title)
 
     # ---------------------------------------------------------
     # Grid
@@ -173,7 +172,6 @@ def plot2D_pcolormesh_panel_core(
     apply_tick_style(
         ax,
         show_ticks=True,
-        ticks_fontsize=opts.ticks_fontsize,
         major_tick_length=opts.major_tick_length,
         major_tick_width=opts.major_tick_width,
         minor_tick_length=opts.minor_tick_length,
@@ -187,7 +185,7 @@ def plot2D_pcolormesh_panel_core(
     # ---------------------------------------------------------
     # Labels
     # ---------------------------------------------------------
-    apply_label_style(ax, xlabel, ylabel, title, opts.fontsize)
+    apply_label_style(ax, xlabel, ylabel, title)
 
     # ---------------------------------------------------------
     # Grid
@@ -259,7 +257,6 @@ def add_colorbar_cm(
     # ---------------------------------------------------------
     cbar.ax.tick_params(
         which="major",
-        labelsize=opts.ticks_fontsize,
         direction=opts.tick_direction,
         length=opts.major_tick_length,
         width=opts.major_tick_width
@@ -269,7 +266,7 @@ def add_colorbar_cm(
     # Label styling
     # ---------------------------------------------------------
     if clabel:
-        cbar.set_label(clabel, fontsize=opts.fontsize, labelpad=1.5)
+        cbar.set_label(clabel, labelpad=1.5)
 
     # ---------------------------------------------------------
     # Spines

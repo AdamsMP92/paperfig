@@ -2,9 +2,9 @@ class PaperFigOptions:
     def __init__(
         self,
         # ---- Tick config ----
-        major_tick_length=2.0,
-        major_tick_width=0.3,
-        minor_tick_length=1.0,
+        major_tick_length=2.2,
+        major_tick_width=0.6,
+        minor_tick_length=1.2,
         minor_tick_width=0.15,
         ticks_fontsize=6,
         tick_direction="in",
@@ -13,17 +13,14 @@ class PaperFigOptions:
         colors=["#D55E00", "#0072B2", "#009E73"],
 
         # ---- Fonts ----
-        fontsize=7,
-        #font_family="sans-serif",
-        #math_font="stixsans",
-        #use_tex=False,
+        #fontsize=7,
         font_family="serif",
         math_font="cm",
         use_tex=True,
         fontserif="Computer Modern Roman",
 
         # ---- Axis frame ----
-        spine_width=0.6,
+        spine_width=0.8,
         spine_color="black",
 
         # ---- Lines ----
@@ -48,7 +45,7 @@ class PaperFigOptions:
 
         self.colors = colors
 
-        self.fontsize = fontsize
+        #self.fontsize = fontsize
         self.font_family = font_family
         self.math_font = math_font
         self.use_tex = use_tex

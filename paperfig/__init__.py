@@ -29,6 +29,7 @@ from .utils import (
 from .panel_1d import (
     plotLinLin_panel_core,
     plotLogLog_panel_core,
+    plotSemiLogX_panel_core,
     plotScatter2D_panel_core
 )
 
@@ -74,6 +75,7 @@ __all__ = [
     # 1D
     "plotLinLin_panel_core",
     "plotLogLog_panel_core",
+    "plotSemiLogX_panel_core",
     "plotScatter2D_panel_core",
 
     # 2D

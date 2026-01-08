@@ -39,7 +39,6 @@ def add_reference_axes(plotter, length=0.5, radius=0.02, offset=0.8):
 def apply_tick_style(
         ax,
         show_ticks=True,
-        ticks_fontsize=6,
         major_tick_length=2.5,
         major_tick_width=0.45,
         minor_tick_length=1.5,
@@ -75,10 +74,10 @@ def apply_tick_style(
     # IF NOT disabled: apply custom ticklabels (if provided)
     # --------------------------------------------------------------------
     if not disable_xticklabels and xticklabels is not None:
-        ax.set_xticklabels(xticklabels, fontsize=ticks_fontsize)
+        ax.set_xticklabels(xticklabels)
 
     if not disable_yticklabels and yticklabels is not None:
-        ax.set_yticklabels(yticklabels, fontsize=ticks_fontsize)
+        ax.set_yticklabels(yticklabels)
 
     # --------------------------------------------------------------------
     # Aesthetics
@@ -86,7 +85,6 @@ def apply_tick_style(
     ax.tick_params(
         which="major",
         direction="in",
-        labelsize=ticks_fontsize,
         length=major_tick_length,
         width=major_tick_width,
         top=True,
@@ -172,7 +170,6 @@ def apply_label_style(
         xlabel=None,
         ylabel=None,
         title=None,
-        fontsize=7,
         labelpad=1.5,
         titlepad=1.5
 ):
@@ -182,13 +179,13 @@ def apply_label_style(
     """
 
     if xlabel is not None:
-        ax.set_xlabel(xlabel, fontsize=fontsize, labelpad=labelpad)
+        ax.set_xlabel(xlabel, labelpad=labelpad)
 
     if ylabel is not None:
-        ax.set_ylabel(ylabel, fontsize=fontsize, labelpad=labelpad)
+        ax.set_ylabel(ylabel, labelpad=labelpad)
 
     if title is not None:
-        ax.set_title(title, fontsize=fontsize, pad=titlepad)
+        ax.set_title(title, pad=titlepad)
 
     return ax
 
