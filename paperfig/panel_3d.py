@@ -251,3 +251,184 @@ def quiver3_advanced_panel(
     ax.axis("off")
 
     return ax, img
+
+
+
+def quiver3_advanced_panel_fast(
+        fig, x, y, z, Hx, Hy, Hz, C, Cmin, Cmax,
+        cmap="viridis",
+        head_length=0.4,
+        stick_radius=0.2,
+        head_radius=0.4,
+        arrow_scale=1.0,
+        centering=True,
+        subsample=1,
+        view="iso",
+        dpi=300,
+        background="white",
+        axes_width_cm=None,
+        axes_pos_x_cm=None,
+        axes_pos_y_cm=None,
+        margin_cm=0.0,
+        crop_cm=(0, 0, 0, 0),
+        cam_pos=(3, 3, 2),
+        focal_point=(0, 0, 0),
+        up_direction=(0, 0, 1)
+):
+
+    # =============================
+    # Convert input
+    # =============================
+    x = np.asarray(x)
+    y = np.asarray(y)
+    z = np.asarray(z)
+    Hx = np.asarray(Hx)
+    Hy = np.asarray(Hy)
+    Hz = np.asarray(Hz)
+    C  = np.asarray(C)
+
+    # =============================
+    # Subsampling (index-based)
+    # =============================
+    # if subsample > 1:
+    #     idx = np.arange(0, len(x), subsample)
+    #     x, y, z = x[idx], y[idx], z[idx]
+    #     Hx, Hy, Hz = Hx[idx], Hy[idx], Hz[idx]
+    #     C = C[idx]
+
+    if subsample > 1:
+
+        coords = np.column_stack((x, y, z))
+
+        # gewünschte räumliche Auflösung
+        # subsample interpretiert als inverse Dichte
+        bbox_min = coords.min(axis=0)
+        bbox_max = coords.max(axis=0)
+        bbox_size = np.max(bbox_max - bbox_min)
+
+        voxel_size = bbox_size / (len(x) / subsample)**(1/3)
+
+        # voxel indices
+        vox = np.floor((coords - bbox_min) / voxel_size).astype(int)
+
+        # unique voxels
+        _, idx = np.unique(vox, axis=0, return_index=True)
+
+        x, y, z = x[idx], y[idx], z[idx]
+        Hx, Hy, Hz = Hx[idx], Hy[idx], Hz[idx]
+        C = C[idx]
+
+
+    # =============================
+    # Coordinate normalization
+    # =============================
+    coords = np.column_stack((x, y, z))
+    center = np.mean(coords, axis=0)
+    coords -= center
+    max_dist = np.max(np.linalg.norm(coords, axis=1))
+    if max_dist > 0:
+        coords /= max_dist
+
+    # =============================
+    # Vector normalization
+    # =============================
+    H = np.column_stack((Hx, Hy, Hz))
+    H_norm = np.linalg.norm(H, axis=1)
+    H_norm[H_norm == 0] = 1.0
+    H_unit = H / H_norm[:, None]
+
+    # =============================
+    # Create PolyData
+    # =============================
+    mesh = pv.PolyData(coords)
+    mesh["vectors"] = H_unit
+    mesh["scalars"] = C
+
+    # =============================
+    # Create base arrow geometry
+    # =============================
+    base_arrow = pv.Arrow(
+        tip_length=head_length,
+        tip_radius=head_radius,
+        shaft_radius=stick_radius,
+        scale=arrow_scale
+    )
+
+    # =============================
+    # Glyph instancing
+    # =============================
+    glyphs = mesh.glyph(
+        orient="vectors",
+        geom=base_arrow
+    )
+
+    # =============================
+    # Render window size
+    # =============================
+    if axes_width_cm is not None:
+        pixels = int((axes_width_cm / 2.54) * dpi)
+        window_size = [pixels, pixels]
+    else:
+        window_size = [800, 800]
+
+    plotter = pv.Plotter(off_screen=True, window_size=window_size)
+    plotter.set_background(background)
+    plotter.enable_anti_aliasing("ssaa")
+
+    plotter.add_mesh(
+        glyphs,
+        scalars="scalars",
+        cmap=cmap,
+        clim=[Cmin, Cmax],
+        smooth_shading=True,
+        specular=0.3,
+        show_scalar_bar=False
+    )
+
+    # =============================
+    # Camera setup
+    # =============================
+    if view == "iso":
+        plotter.view_isometric()
+    elif view == "xy":
+        plotter.view_xy()
+    elif view == "xz":
+        plotter.view_xz()
+    elif view == "yz":
+        plotter.view_yz()
+    elif view == "top":
+        plotter.camera_position = [(0, 0, 1), (0, 0, 0), (0, 1, 0)]
+    elif view == "custom":
+        plotter.camera_position = [cam_pos, focal_point, up_direction]
+
+    if margin_cm > 0 and axes_width_cm is not None:
+        zoom_factor = axes_width_cm / (axes_width_cm + 2 * margin_cm)
+        plotter.camera.zoom(zoom_factor)
+
+    try:
+        add_reference_axes(plotter, length=0.5, radius=0.015, offset=0.8)
+    except Exception:
+        pass
+
+    # =============================
+    # Render
+    # =============================
+    img = plotter.screenshot(return_img=True)
+    plotter.clear()
+    plotter.close()
+
+    # =============================
+    # Cropping
+    # =============================
+    if crop_cm != (0, 0, 0, 0):
+        px_per_cm = dpi / 2.54
+        crop_px = tuple(int(c * px_per_cm) for c in crop_cm)
+        img = crop_image(img, *crop_px)
+
+    ax = add_axes_cm(fig, axes_pos_x_cm, axes_pos_y_cm,
+                     axes_width_cm, axes_width_cm)
+
+    ax.imshow(img)
+    ax.axis("off")
+
+    return ax, img

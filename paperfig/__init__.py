@@ -30,7 +30,8 @@ from .panel_1d import (
     plotLinLin_panel_core,
     plotLogLog_panel_core,
     plotSemiLogX_panel_core,
-    plotScatter2D_panel_core
+    plotScatter2D_panel_core,
+    plotGeneral1D_panel_core
 )
 
 # --- 2D panel tools ---
@@ -43,7 +44,8 @@ from .panel_2d import (
 # --- 3D panel tools ---
 from .panel_3d import (
     quiver3_advanced,
-    quiver3_advanced_panel
+    quiver3_advanced_panel,
+    quiver3_advanced_panel_fast
 )
 
 # --- High-level vector-field panel ---
@@ -77,6 +79,7 @@ __all__ = [
     "plotLogLog_panel_core",
     "plotSemiLogX_panel_core",
     "plotScatter2D_panel_core",
+    "plotGeneral1D_panel_core",
 
     # 2D
     "plot2D_panel_core",
@@ -86,6 +89,7 @@ __all__ = [
     # 3D
     "quiver3_advanced",
     "quiver3_advanced_panel",
+    "quiver3_advanced_panel_fast"
 
     # Vectorfield
     "PlotVectorfieldPanel",
