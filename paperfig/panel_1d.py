@@ -4,6 +4,15 @@ from .figure import add_axes_cm
 from .utils import apply_tick_style, apply_label_style, apply_grid_style
 
 
+def _as_1d_plot_array(values):
+    """Return a flat 1D array, accepting either one array or a list of arrays."""
+    if isinstance(values, (list, tuple)) and values:
+        first = values[0]
+        if isinstance(first, (list, tuple, np.ndarray)):
+            return np.concatenate([np.ravel(np.asarray(v)) for v in values])
+    return np.ravel(np.asarray(values))
+
+
 # ============================================================
 # 1) LOG–LOG PANEL
 # ============================================================
@@ -565,15 +574,15 @@ def plotGeneral1D_panel_core(
     # ---------------------------------------------------------
     for i, data in enumerate(datasets):
 
-        linestyle   = data.get("linestyle", data.get("linestyle", "-"))
+        linestyle   = data.get("ls", data.get("linestyle", "-"))
         color       = data.get("color", "k")
         marker      = data.get("marker", "o")
         markersize  = data.get("markersize", 3.0)
         plottype    = data.get("plottype", "scatter")
         linewidth   = data.get("linewidth", 1.0)
 
-        x = np.asarray(data["x"])
-        y = np.asarray(data["y"])
+        x = _as_1d_plot_array(data["x"])
+        y = _as_1d_plot_array(data["y"])
 
         if plottype == "scatter":
             ax.scatter(
@@ -665,4 +674,3 @@ def plotGeneral1D_panel_core(
     ax.set_axisbelow(True)
         
     return ax
-

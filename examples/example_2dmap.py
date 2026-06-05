@@ -1,51 +1,48 @@
+from pathlib import Path
+import sys
+
 import numpy as np
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import paperfig as pf
 
-# ------------------------------
-# Example data: 2D Gaussian
-# ------------------------------
+
+OUTPUT = Path(__file__).with_suffix(".png")
+
 x = np.linspace(-2, 2, 200)
 y = np.linspace(-2, 2, 150)
 X, Y = np.meshgrid(x, y)
-Z = np.exp(-(X**2 + 2*Y**2))
+Z = np.exp(-(X**2 + 2 * Y**2))
 
-# ------------------------------
-# Create figure
-# ------------------------------
-fig = pf.create_paper_figure(width_cm=8.5, height_cm=6.0, fontsize=7)
+fig = pf.create_paper_figure(width_cm=13.5, height_cm=8.0)
 
-# Panel label
-pf.add_label_cm(fig,
-                "(a)",
-                x_cm=0.2,
-                y_cm=5.5,
-                fig_width_cm=8.5,
-                fig_height_cm=6.0)
+pf.add_label_cm(fig, "(a)", x_cm=0.35, y_cm=7.3, weight="bold")
 
-# ------------------------------
-# Panel
-# ------------------------------
 ax, im = pf.plot2D_panel_core(
-    fig, x, y, Z,
-    pos_cm=(1.5, 1.0),
-    size_cm=(4.5, 4.5),
-    cmap="cool",
+    fig,
+    x,
+    y,
+    Z,
+    pos_cm=(2.0, 1.25),
+    size_cm=(5.7, 5.7),
+    cmap="magma",
     xlabel=r"$x$",
     ylabel=r"$y$",
-    title="2D Gaussian",
-    aspect="equal"
+    title=r"$2\mathrm{D}\ \mathrm{Gaussian}$",
+    vmin=0,
+    vmax=1,
 )
 
-# ------------------------------
-# Colorbar
-# ------------------------------
 pf.add_colorbar_cm(
     fig,
-    im,
-    pos_cm=(6.2, 1.0),
-    size_cm=(0.15, 4.5),
-    clabel="Intensity"
+    pos_cm=(8.2, 1.25),
+    size_cm=(0.22, 5.7),
+    vmin=0,
+    vmax=1,
+    cmap="magma",
+    clabel=r"$I$",
+    ticks=[0, 0.5, 1.0],
 )
 
-fig.savefig("example_2dmap.png", dpi=600)
-print("Saved example_2dmap.png")
+fig.savefig(OUTPUT, dpi=600)
+print(f"Saved {OUTPUT}")
