@@ -1,70 +1,70 @@
+from pathlib import Path
+import sys
+
 import numpy as np
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import paperfig as pf
 
-# ------------------------------
-# Example vector field: vortex
-# ------------------------------
-N = 15
+
+OUTPUT = Path(__file__).with_suffix(".png")
+
+N = 11
 x = np.linspace(-1, 1, N)
 y = np.linspace(-1, 1, N)
 z = np.linspace(-1, 1, N)
-
 X, Y, Z = np.meshgrid(x, y, z)
 
-
-# Vortex field
 Hx = -Y
 Hy = X
-Hz = np.zeros_like(X) + 0.5
+Hz = np.full_like(X, 0.5)
 
 H = np.sqrt(Hx**2 + Hy**2 + Hz**2)
-Hx = Hx/H
-Hy = Hy/H
-Hz = Hz/H
+Hx = Hx / H
+Hy = Hy / H
+Hz = Hz / H
+C = Hz
 
-C = Hz  # color by y-component
-
-# Flatten to 1D
 xv = X.ravel()
 yv = Y.ravel()
 zv = Z.ravel()
 Hxv = Hx.ravel()
 Hyv = Hy.ravel()
 Hzv = Hz.ravel()
-Cv  = C.ravel()
+Cv = C.ravel()
 
-# ------------------------------
-# Create figure
-# ------------------------------
-x_shift = + 0.5
-y_shift = - 0.5
+fig = pf.create_paper_figure(width_cm=6.5, height_cm=6.15)
 
-fig = pf.create_paper_figure(width_cm=8.5, height_cm=6.0, fontsize=7)
+pf.add_label_cm(fig, "(a)", x_cm=0.2, y_cm=5.7, fontsize=14)
+pf.add_label_cm(fig, r"$x$", x_cm=1.15, y_cm=0.5, fontsize=12)
+pf.add_label_cm(fig, r"$z$", x_cm=0.3, y_cm=2.2, fontsize=12)
 
-pf.add_label_cm(fig, "(a)", 0.2+x_shift, 5.3+y_shift, 8.5, 6.0)
-
-pf.add_label_cm(fig, r"$x$", 1.2+x_shift, 1.0+y_shift, 8.5, 6.0)
-pf.add_label_cm(fig, r"$z$", 0.3+x_shift, 2.75+y_shift, 8.5, 6.0)
-
-# ------------------------------
-# 3D Panel
-# ------------------------------
-ax, img = pf.quiver3_advanced_panel(
+ax, img = pf.quiver3_advanced_panel_fast(
     fig,
-    xv, yv, zv, Hxv, Hyv, Hzv, Cv,
-    Cmin=np.min(Cv), Cmax=np.max(Cv),
+    xv,
+    yv,
+    zv,
+    Hxv,
+    Hyv,
+    Hzv,
+    Cv,
+    Cmin=np.min(Cv),
+    Cmax=np.max(Cv),
     cmap="coolwarm",
-    scale=0.075,
+    head_length=0.35,
+    stick_radius=0.07,
+    head_radius=0.15,
+    arrow_scale=0.18,
     subsample=1,
     view="custom",
-    cam_pos=(3, -3, 1),
+    cam_pos=(3, -3, 1.3),
     focal_point=(0, 0, 0),
     up_direction=(0, 0, 1),
-    axes_width_cm=6.5,
-    axes_pos_x_cm=0.5+x_shift,
-    axes_pos_y_cm=0.5+y_shift,
-    dpi=600
+    axes_width_cm=6.9,
+    axes_pos_x_cm=0.35,
+    axes_pos_y_cm=-0.15,
+    dpi=300,
 )
 
-fig.savefig("example_quiver3d.png", dpi=600)
-print("Saved example_quiver3d.png")
+fig.savefig(OUTPUT, dpi=600)
+print(f"Saved {OUTPUT}")

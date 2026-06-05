@@ -13,7 +13,6 @@ class PaperFigOptions:
         colors=["#D55E00", "#0072B2", "#009E73"],
 
         # ---- Fonts ----
-        #fontsize=7,
         font_family="serif",
         math_font="cm",
         use_tex=True,
@@ -45,7 +44,6 @@ class PaperFigOptions:
 
         self.colors = colors
 
-        #self.fontsize = fontsize
         self.font_family = font_family
         self.math_font = math_font
         self.use_tex = use_tex

@@ -23,7 +23,7 @@ def create_paper_figure(
         rc.update({
             "text.usetex": True,
             "font.family": "serif",
-            "font.serif": ["Computer Modern"],
+            "font.serif": [fontserif],
             "axes.unicode_minus": False,
 
             # Optional für perfekte PDF-Fonts
@@ -52,7 +52,16 @@ def add_axes_cm(fig, left_cm, bottom_cm, width_cm, height_cm):
     ])
 
 # add_label_cm ########################################
-def add_label_cm(fig, text, x_cm, y_cm, **kwargs):
+def add_label_cm(
+        fig,
+        text,
+        x_cm,
+        y_cm,
+        fig_width_cm=None,
+        fig_height_cm=None,
+        centered=False,
+        **kwargs
+):
     """
     Add a text label using cm coordinates relative to the figure size.
 
@@ -64,21 +73,32 @@ def add_label_cm(fig, text, x_cm, y_cm, **kwargs):
         Label text.
     x_cm, y_cm : float
         Position in cm relative to figure size.
+    fig_width_cm, fig_height_cm : float, optional
+        Explicit figure dimensions in cm. These keep older examples working;
+        by default the size is read from ``fig``.
+    centered : bool, default False
+        If True, (x_cm, y_cm) is interpreted as the text center.
     **kwargs : dict
         Additional styling arguments passed to fig.text().
     """
 
     # --- 1) Get figure size in cm ---
     w_in, h_in = fig.get_size_inches()
-    w_cm = w_in * 2.54
-    h_cm = h_in * 2.54
+    w_cm = fig_width_cm if fig_width_cm is not None else w_in * 2.54
+    h_cm = fig_height_cm if fig_height_cm is not None else h_in * 2.54
 
     # --- 2) Normalize cm → figure coordinates ---
     x_rel = x_cm / w_cm
     y_rel = y_cm / h_cm
 
-    # --- 3) Add text ---
-    fig.text(x_rel, y_rel, text, **kwargs)
+    # --- 3) Optional center anchoring ---
+    if centered:
+        kwargs.setdefault("ha", "center")
+        kwargs.setdefault("va", "center")
+        kwargs.setdefault("rotation_mode", "anchor")
+
+    # --- 4) Add text ---
+    return fig.text(x_rel, y_rel, text, **kwargs)
 
 
 
@@ -152,7 +172,8 @@ def add_folder_box_cm(fig, x_cm, y_cm, w_cm, h_cm,
     # --- 5) Text in die Mitte ---
     text_x_rel = (x_cm + w_cm/2) / fig_w_cm
     text_y_rel = (y_cm + h_cm/2) / fig_h_cm
-    fig.text(text_x_rel, text_y_rel, text, **text_kwargs)
+    text_artist = fig.text(text_x_rel, text_y_rel, text, **text_kwargs)
+    return poly, text_artist
 
 
 def add_line_cm(fig, x1_cm, y1_cm, x2_cm, y2_cm, **kwargs):
@@ -173,3 +194,39 @@ def add_line_cm(fig, x1_cm, y1_cm, x2_cm, y2_cm, **kwargs):
 
     # Add directly to figure (not to an Axes)
     fig.add_artist(line)
+    return line
+
+
+def add_color_box_cm(
+        fig,
+        x_cm,
+        y_cm,
+        w_cm,
+        h_cm,
+        color,
+        alpha=1.0,
+        edgecolor="black",
+        linewidth=0.5,
+        zorder=None
+):
+    """
+    Add a colored rectangle using cm coordinates relative to the figure.
+    """
+
+    fig_w_cm = fig.get_size_inches()[0] * 2.54
+    fig_h_cm = fig.get_size_inches()[1] * 2.54
+
+    rect = patches.Rectangle(
+        (x_cm / fig_w_cm, y_cm / fig_h_cm),
+        w_cm / fig_w_cm,
+        h_cm / fig_h_cm,
+        transform=fig.transFigure,
+        facecolor=color,
+        edgecolor=edgecolor,
+        linewidth=linewidth,
+        alpha=alpha,
+        zorder=zorder
+    )
+
+    fig.patches.append(rect)
+    return rect

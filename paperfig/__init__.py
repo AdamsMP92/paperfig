@@ -12,7 +12,8 @@ from .figure import (
     add_axes_cm,
     add_label_cm,
     add_folder_box_cm,
-    add_line_cm
+    add_line_cm,
+    add_color_box_cm,
 )
 
 # --- Utility helpers ---
@@ -25,7 +26,7 @@ from .utils import (
     apply_grid_style
 )
 
-# --- 1D panel tools ---d
+# --- 1D panel tools ---
 from .panel_1d import (
     plotLinLin_panel_core,
     plotLogLog_panel_core,
@@ -64,7 +65,8 @@ __all__ = [
     "add_axes_cm",
     "add_label_cm",
     "add_folder_box_cm",
-    "add_line_cm"
+    "add_line_cm",
+    "add_color_box_cm",
 
     # Utilities
     "crop_image",
@@ -89,7 +91,7 @@ __all__ = [
     # 3D
     "quiver3_advanced",
     "quiver3_advanced_panel",
-    "quiver3_advanced_panel_fast"
+    "quiver3_advanced_panel_fast",
 
     # Vectorfield
     "PlotVectorfieldPanel",
