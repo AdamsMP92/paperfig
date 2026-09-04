@@ -347,19 +347,43 @@ def quiver3_advanced_panel_fast(
     # =============================
     # Create base arrow geometry
     # =============================
+    #base_arrow = pv.Arrow(
+    #    tip_length=head_length,
+    #    tip_radius=head_radius,
+    #    shaft_radius=stick_radius,
+    #    scale=arrow_scale
+    #)
+
+    # pv.Arrow points along the local +x direction.
+    # For centering=True, shift the complete arrow by half its total
+    # length so that x=0 is the center of the arrow.
+    arrow_start = (
+        (-0.5 * arrow_scale, 0.0, 0.0)
+        if centering
+        else (0.0, 0.0, 0.0)
+    )
+
     base_arrow = pv.Arrow(
+        start=arrow_start,
+        direction=(1.0, 0.0, 0.0),
         tip_length=head_length,
         tip_radius=head_radius,
         shaft_radius=stick_radius,
-        scale=arrow_scale
+        scale=arrow_scale,
     )
 
     # =============================
     # Glyph instancing
     # =============================
+    #glyphs = mesh.glyph(
+    #    orient="vectors",
+    #    geom=base_arrow
+    #)
+
     glyphs = mesh.glyph(
         orient="vectors",
-        geom=base_arrow
+        scale=False,
+        geom=base_arrow,
     )
 
     # =============================
